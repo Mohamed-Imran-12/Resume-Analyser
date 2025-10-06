@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <style>
+        body {
+          font-family: Arial, sans-serif;
+          background-color: #f6f8fb;
+          padding: 20px;
+        }
+        .container {
+          max-width: 600px;
+          margin: auto;
+          background: #ffffff;
+          border-radius: 12px;
+          padding: 25px;
+          border: 1px solid #e0e0e0;
+          box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+        h2 {
+          color: #2c3e50;
+        }
+        .otp {
+          font-size: 22px;
+          font-weight: bold;
+          color: #3498db;
+          margin: 20px 0;
+          letter-spacing: 2px;
+        }
+        p {
+          color: #555;
+          line-height: 1.5;
+        }
+        .footer {
+          font-size: 12px;
+          color: #888;
+          margin-top: 25px;
+          text-align: center;
+          border-top: 1px solid #eee;
+          padding-top: 10px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>Welcome to Resume Analyser</h2>
+    <p>Hi <b th:text="${username}"></b>,</p>
+    <p>Your OTP for email verification is:</p>
+    <div class="otp" th:text="${otp}"></div>
+    <p>This OTP is valid for <b>10 minutes</b>. Please use it to verify your email <b th:text="${email}"></b> to complete your account creation.</p>
+    <p>If you didn’t request this verification, please ignore this email.</p>
+    <div class="footer">
+        <p>With Regards,<br/>Resume Analyser Team</p>
+        <p>© 2025 Resume Analyser. All rights reserved.</p>
+    </div>
+</div>
+</body>
+</html>
