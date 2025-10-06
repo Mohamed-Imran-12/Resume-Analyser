@@ -134,7 +134,7 @@ public class appService {
                 usermod.setPreviousResults(true);
                 usersTableRepository.save(usermod);
             }
-            return  new ResponseEntity<>(resultsDto, HttpStatus.OK);
+            return  new ResponseEntity<>("Analysed successfully", HttpStatus.OK);
         }
 
         return  new ResponseEntity<>("Invalid document", HttpStatus.NOT_ACCEPTABLE);
