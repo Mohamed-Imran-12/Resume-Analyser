@@ -2,6 +2,9 @@ package com.ai.Resume.analyser.configuration;
 
 
 import com.ai.Resume.analyser.jwt.jwtFilter;
+import com.ai.Resume.analyser.service.failureHandler;
+import com.ai.Resume.analyser.service.successHandler;
+import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -26,6 +29,12 @@ public class securityConfiguration {
     @Autowired
     private jwtFilter jwtfilter;
 
+    @Autowired
+    private successHandler successHandler;
+
+    @Autowired
+    private failureHandler failureHandler;
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http
@@ -37,6 +46,10 @@ public class securityConfiguration {
                 .csrf(AbstractHttpConfigurer::disable)
                 .logout(AbstractHttpConfigurer::disable)
                 .addFilterBefore(jwtfilter, UsernamePasswordAuthenticationFilter.class)
+                .oauth2Login(oauth ->oauth
+                        .loginPage("/login")
+                        .successHandler(successHandler)
+                        .failureHandler(failureHandler))
                 .sessionManagement(session->session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .build();
     }

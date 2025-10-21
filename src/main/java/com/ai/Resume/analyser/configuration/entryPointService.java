@@ -23,6 +23,6 @@ public class entryPointService implements UserDetailsService {
 
 
 
-        return User.builder().username(user.getEmail()).password(user.getPassword()).roles("user").build();
+        return User.builder().username(user.getEmail()).password(user.getPassword() != null ? user.getPassword() : "").roles("user").build();
     }
 }
