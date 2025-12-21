@@ -1,0 +1,270 @@
+.container{
+    background-color: black;
+    color: whitesmoke;
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+.nav{
+    position: fixed;
+    top:0%;
+    display: flex;
+    align-items: center;
+    justify-content:space-between;
+    width: 100%;
+    z-index: 9;
+    backdrop-filter: blur(5px);
+}
+.nav h1{
+    background:linear-gradient(to right,#0061ff,#60efffd1);
+    -webkit-background-clip: text;
+    color: transparent;
+    padding: 3px 6px;
+    
+    font-weight: bold;
+    
+}
+.nav button{
+    border: none;
+    padding: 5px 10px;
+    border-radius: 50px;
+    margin: 5px 10px ;
+    font-weight: 600;
+    cursor: pointer;
+    transform: scale(1.05);
+    transition: 0.3s ease;
+}
+.nav button:hover{
+    transform: scale(1.05);
+    box-shadow: 0px 0px 10px honeydew;
+}
+.nav button:active{
+    transform: scale(0.95);
+    box-shadow: 0px 0px 10px honeydew;
+}
+
+
+.doc{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    margin-top: 100px;
+    width: 100%;
+}
+
+.report{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+
+   
+}
+.sc1{
+    width: 20%;
+    z-index: 4;
+}
+.sc2{
+    width: 20%;
+    z-index: 4;
+}
+
+.pros,.cons,.sug{
+
+    background-color:  #1a1a1ad5;
+    border-radius: 30px;
+    overflow: hidden;
+    width: 90%;
+    margin: 15px 0px;
+
+}
+
+.pros h2{
+    background:linear-gradient(to right,#00ff00a4,#7efc009a);
+    padding: 10px 15px;
+
+}
+
+.cons h2{
+    padding: 10px 15px;
+     background:linear-gradient(to right,#fe2e2ed5,#e85757cc);
+}
+
+.sug h2{
+    padding: 10px 15px;
+     background:linear-gradient(to right,#0047a1,#42a5f5);
+}
+
+.pros ul,.cons ul,.sug ul{
+    padding:10px 15px ;
+    margin:0px 15px
+}
+
+.pros li::marker,.cons li::marker,.sug li::marker{
+    color: #9e9e9e;
+}
+.pros li,.cons li, .sug li{
+    padding: 4px;
+    color:#e0e0e0;
+}
+
+.rev{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    padding: 10px 0px
+}
+.errinfo{
+    padding: 10px;
+    text-align: center;
+}
+
+
+.loadani{
+    height: 100vh;
+    width: 100%;
+    top:0;
+    left:0;
+    position:fixed;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 13;
+    background-color: black;
+    
+}
+
+.loadanimation{
+    
+    width: 10%;
+    display: block;
+    border-radius: 50%;
+    aspect-ratio: 1;
+    background-color: rgb(0, 0, 0);
+    position: relative;
+    animation: spin  0.8s linear infinite;
+   
+}
+
+
+.loadanimation::before,.loadanimation::after{
+    content: "";
+    position: absolute;
+    height: 100%;
+    z-index: -1;
+    border-radius: 50%;
+    padding: 1rem;  
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+   background:conic-gradient(transparent 40%,#60efffd1 ,#0061ff );
+    width: 100%;
+}
+
+.loadanimation::after{
+   background:conic-gradient(transparent 30%,#60efffd1 ,#0061ff );
+    filter: blur(10px);
+    
+}
+
+.loadani h1 {
+    margin: 15px;
+    margin-top: 50px;
+    background: linear-gradient(
+        to right,
+        #0061ff 0%,
+        #60efffd1 30%,
+        #0061ff 100%
+    );
+    -webkit-background-clip: text;
+    color: transparent;
+    background-size: 200% auto;
+    animation: colchange 5s linear infinite;
+}
+
+@keyframes colchange {
+    0% {
+        background-position: 0% ;
+    }
+    100% {
+        background-position: 200% ;
+    }
+}
+
+ .capstart {
+    position: absolute;
+    height: 1.015rem;
+    width: 1.015rem;
+    border-radius: 50%;
+    background:linear-gradient(184deg,#0061ff,#4e8fd9) ;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) ;
+    top:-0.5007rem;
+    
+}
+.loadblock{
+    background:rgb(0, 0, 0);
+    width: 100%;
+    filter: blur(5px);
+    height: 100%;
+    display: block;
+    border-radius: 50%;
+}
+
+@keyframes spin{
+ from{
+    transform: rotate(0deg);
+    
+ }
+ to{
+    transform: rotate(360deg);
+   
+ }
+}
+
+@media screen and (max-width:539px) {
+    .report{
+        flex-direction: column;
+        width: 90%;
+    }
+    .sc1{
+    width: 60%;
+}
+.sc2{
+    width: 60%;
+
+}
+
+.pros,.cons,.sug{
+    width:90%;
+}
+}
+
+
+@media screen and (max-width:431px) {
+
+    .loadanimation::after{
+    filter: blur(7px);
+    
+}
+
+.loadblock{
+    filter:blur(1px)
+}
+ 
+
+    .nav h1 {
+        font-size:25px;
+        padding: 3px 6px;
+    }
+
+    
+    
+}

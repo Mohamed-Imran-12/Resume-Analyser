@@ -1,0 +1,312 @@
+.container{
+    background-color: black;
+    color: whitesmoke;
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+.nav{
+    position: fixed;
+    top:0%;
+    display: flex;
+    align-items: center;
+    justify-content:space-between;
+    width: 100%;
+    backdrop-filter: blur(5px);
+}
+.nav h1{
+    background:linear-gradient(to right,#0061ff,#60efffd1);
+    -webkit-background-clip: text;
+    color: transparent;
+    padding: 3px 6px;
+    font-weight: bold;
+    
+}
+.nav button{
+    border: none;
+    padding: 5px 10px;
+    border-radius: 50px;
+    margin: 5px 10px ;
+    font-weight: 600;
+    cursor: pointer;
+    transform: scale(1.05);
+    transition: 0.3s ease;
+}
+
+.bg{
+    margin-top:60px;
+    width:25%
+}
+
+.nav button:hover{
+    transform: scale(1.05);
+    box-shadow: 0px 0px 10px honeydew;
+}
+.nav button:active{
+    transform: scale(0.95);
+    box-shadow: 0px 0px 10px honeydew;
+}
+
+.core{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    padding: 10px;
+    width: 90%;
+    height: 90%;
+}
+
+.core h1{
+    text-align: left;
+    padding: 5px 10px;
+    background:linear-gradient(to right,#0061ff ,#60efffd1 );
+    -webkit-background-clip: text;
+    color: transparent;
+    width: 100%;
+    font-weight: 600;
+
+}
+.core p {
+    text-align: justify;
+    padding: 5px 10px;
+    margin: 10px 0px;
+    width: 100%;
+}
+.btncontainer{
+    margin: 20px 0px ;
+    width: 100%;
+    display: flex;
+    align-items: center;
+  
+}
+
+
+.btncontainer button {
+    padding: 10px 20px ;
+    font-weight: 600;
+    border: none;
+    border-radius: 30px;
+    margin: 15px 10px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+.btncontainer button:hover:not(:disabled) {
+    transform: scale(1.05);
+    box-shadow: 0px 0px 10px honeydew;
+
+
+}
+.btncontainer button:active:not(:disabled) {
+    transform: scale(0.95);
+    box-shadow: 0px 0px 0px honeydew;
+
+}
+
+.btncontainer button:disabled{
+    cursor: not-allowed;
+    background-color:rgb(137, 137, 137) ;
+    color: rgb(59, 59, 59);
+}
+
+.profile{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(to right,#0061ff ,#60efffd1 );
+    padding: 5px;
+    margin: 5px 10px;
+    color: black;
+    font-weight: bold;
+    line-height: 0px;
+    cursor: pointer;
+    text-align: center;
+    transition: 0.15s;
+    border-radius: 50px;
+    aspect-ratio: 1;
+    height: 25px;
+}
+
+.profile:hover{
+    transform: scale(1.05);
+    background: linear-gradient(to right,#0062ffd4 ,#60efffa6 );
+    box-shadow: 0px 0px 15px #0061ff;
+
+}
+.profile:active{
+    transform: scale(0.95);
+
+}
+
+
+
+.profilemenu{
+    position:fixed;
+    top:60px;
+    right: 10px;
+    background-color:#1a1a1ad5;
+    backdrop-filter: blur(4px);
+    border-radius: 20px;
+    overflow: hidden;
+    animation: slide 0.3s linear 1;
+}
+
+.delcontainer{
+    height: 100%;
+    width: 100%;
+    position:fixed;
+    top:0;
+    left:0;
+    z-index: 3;
+    display: none;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+    backdrop-filter: blur(16px);
+}
+
+.confirmcontainer{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    margin: 10px;
+    box-shadow: 0px 0px 3px whitesmoke;
+    backdrop-filter: blur(50px);
+    background-color: rgba(255, 255, 255, 0.048);
+    padding: 10px;
+    text-align: center;
+    border-radius: 20px;
+}
+
+.confirmcontainer p{
+    margin: 10px 5px;
+}
+.confirmationbtns{
+    padding: 10px;
+    margin: 15px 5px;
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    width: 100%;
+}
+
+.confirmdel{
+
+    border: none;
+    padding: 3px 10px;
+    background-color: red;
+    border-radius: 20px;
+    transition: 0.15s;
+    font-weight: 600;
+}
+
+.notnow{
+    border: none;
+    padding: 3px 10px;
+    background-color: whitesmoke;
+    border-radius: 20px;
+    font-weight: 600;
+    transition: 0.15s;
+}
+
+.confirmdel:hover:not(:disabled),.notnow:hover:not(:disabled){
+    cursor: pointer;
+    transform: scale(1.05);
+}
+.confirmdel:active:not(:disabled),.notnow:active:not(:disabled){
+    transform: scale(0.95);
+}
+.notnow:hover:not(:disabled){
+    background-color: rgb(192, 190, 190);
+   
+}
+.confirmdel:hover:not(:disabled){
+    background-color: rgb(203, 5, 5);
+   
+}
+
+
+
+@keyframes slide {
+    0%{
+        right:-40%;
+    }
+
+    100%{
+        right: 10px;
+    }
+   
+
+}
+.profilemenu h2 {
+    text-align: center;
+    color: transparent;
+    padding: 10px  10px 10px 10px;
+    background: linear-gradient(to right,#0061ff ,#60efffd1 );
+    -webkit-background-clip: text;
+    font-weight: bold;
+}
+.profilemenu hr {
+    border-radius: 3px;
+    border: none;
+    height: 1px;
+    background: white;
+}
+
+.pmenusec{
+    margin: 3px 0px;
+}
+
+.pmenusec button{
+    cursor: pointer;
+    text-align: center;
+    width: 100%;
+    padding: 5px 0px;
+    color: whitesmoke;
+    padding: 5px 10px;
+    background-color: transparent;
+    border: none;
+}
+
+.pmenusec button:hover:not(:disabled){
+    background-color: rgb(63, 63, 63);
+}
+
+.pmenusec button:disabled{
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+.del{
+    color: rgb(255, 19, 19);
+    border-bottom-right-radius: 20px;
+    border-bottom-left-radius: 20px;
+}
+
+.confirmdel:disabled,.notnow:disabled{
+    cursor: not-allowed;
+    color: black;
+    opacity: 0.6;
+}
+
+
+@media screen and (max-width:431px) {
+
+    .bg{
+        width: 50%;
+    }
+
+    .nav h1 {
+        font-size:27px;
+        padding: 3px 6px;
+    }
+
+    .confirmcontainer{
+        width: 90%;
+        margin: 0px;
+    }
+    
+}
