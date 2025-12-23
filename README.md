@@ -114,7 +114,7 @@ Do **not** edit files inside the backend `static` folder directly.
 
 ### 1. Run Frontend Separately (Development Mode)
 ```bash
-cd frontend
+cd "frontend src"
 npm install
 npm run dev
 ```
@@ -125,7 +125,7 @@ This starts the React development server for UI changes.
 
 ### 2. Build Frontend for Backend Deployment
 ```bash
-cd frontend
+cd "frontend src"
 npm run build
 ```
 
