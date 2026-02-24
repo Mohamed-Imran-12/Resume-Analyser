@@ -8,7 +8,7 @@
 
 Resume Analyzer is a full-stack web application that analyzes resumes using Artificial Intelligence and provides meaningful insights such as skill extraction, resume evaluation, and improvement suggestions.
 
-This project integrates **Google Gemini AI** for resume analysis and includes secure authentication features like email verification and password reset using **Brevo**.
+This project integrates **Google Gemini AI** for resume analysis and includes secure authentication features like email verification and password reset using **Brevo** and job suggestions using **Adzuna API**.
 
 
 
@@ -84,6 +84,13 @@ genKey=your_GEMINI_API_KEY
 ```properties
 apiKey=your_BREVO_MAIL_API
 ```
+
+###### Job Suggestions (ONLY Adzuna)
+```properties
+application-id=your_ADZUNA_APP_ID
+application-api-key=your_ADZUNA_API_KEY
+```
+
 
 #### 4. Run Backend
 Run `ResumeAnalyserApplication.java`
