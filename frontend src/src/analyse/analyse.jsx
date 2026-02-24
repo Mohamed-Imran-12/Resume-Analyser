@@ -5,43 +5,46 @@ import { usercontext } from "../appcontext"
 import { useNavigate } from "react-router-dom"
 function Analyse() {
     const navigate = useNavigate()
-    const [score,setscore]=useState(0)
-    const [atsscore,setatsscore]=useState(0)
-    const [pros,setpros]=useState([])
-    const [cons,setcons]=useState([])
-    const [sug,setsug]=useState([])
-    const {serviceURL} =useContext(usercontext)
-    const [isfetched,setisfetched]=useState(false)
+    const [score, setscore] = useState(0)
+    const [atsscore, setatsscore] = useState(0)
+    const [pros, setpros] = useState([])
+    const [cons, setcons] = useState([])
+    const [sug, setsug] = useState([])
+    const [jobs, setjobs] = useState([])
+    const { serviceURL } = useContext(usercontext)
+    const [isfetched, setisfetched] = useState(false)
     useEffect(
-       ()=>{
-         document.getElementById("animate").style.display = "flex";
-         fetch(`${serviceURL}/lastReport`,{credentials:"include"}).then(
-            response =>{
-                if(response.ok){
-                    return response.json()
-                     document.getElementById("animate").style.display = "none";
+        () => {
+            document.getElementById("animate").style.display = "flex";
+            fetch(`${serviceURL}/lastReport`, { credentials: "include" }).then(
+                response => {
+                    if (response.ok) {
+                        return response.json()
+                        document.getElementById("animate").style.display = "none";
+                    }
+                    else {
+                        console.log("failed")
+                        document.getElementById("animate").style.display = "none";
+                    }
                 }
-                else{
-                   console.log("failed")
-                   document.getElementById("animate").style.display = "none";
+            ).then(data => {
+                if (data != null) {
+                    setscore(data.score)
+                    setatsscore(data.atsoptimizationscore)
+                    setpros(data.pros)
+                    setcons(data.cons)
+                    setsug(data.suggestions)
+                    setjobs(data.jobs)
+                    console.log(data.jobs)
+                    setisfetched(true)
+                    document.getElementById("animate").style.display = "none";
                 }
-            }
-        ).then(data =>{
-            if(data != null ){
-                setscore(data.score)
-                setatsscore(data.atsoptimizationscore)
-                setpros(data.pros)
-                setcons(data.cons)
-                setsug(data.suggestions)
-                setisfetched(true)
-                document.getElementById("animate").style.display = "none";
-            }
-        })
-        .catch(error =>{
-           console.log(error)
-            document.getElementById("animate").style.display = "none";
-        })
-       },[]
+            })
+                .catch(error => {
+                    console.log(error)
+                    document.getElementById("animate").style.display = "none";
+                })
+        }, []
     )
 
 
@@ -49,9 +52,9 @@ function Analyse() {
         <div className={Styles.container}>
             <div className={Styles.nav}>
                 <h1>Resume Analyser</h1>
-                <button onClick={()=> navigate("/uploaddoc")}>Analyse</button>
+                <button onClick={() => navigate("/uploaddoc")}>Analyse</button>
             </div>
-            
+
             <div className={Styles.loadani} id="animate">
 
                 <div className={Styles.loadanimation}>
@@ -61,8 +64,8 @@ function Analyse() {
                 <h1>Preparing Report</h1>
 
             </div>
-            
-            {isfetched ?<div className={Styles.doc}>
+
+            {isfetched ? <div className={Styles.doc}>
                 <div className={Styles.report}>
                     <div className={Styles.sc1}>
                         <Heat
@@ -125,24 +128,39 @@ function Analyse() {
                     <div className={Styles.pros}>
                         <h2>Strengths </h2>
                         <ul>
-                            {pros.map((item,index)=><li key={index}>{item}</li>)}
+                            {pros.map((item, index) => <li key={index}>{item}</li>)}
                         </ul>
                     </div>
                     <div className={Styles.cons}>
                         <h2>Improvements</h2>
                         <ul>
-                             {cons.map((item,index)=><li key={index}>{item}</li>)}
+                            {cons.map((item, index) => <li key={index}>{item}</li>)}
                         </ul>
                     </div>
                     <div className={Styles.sug}>
                         <h2>Tips to enhance</h2>
                         <ul>
-                             {sug.map((item,index)=><li key={index}>{item}</li>)}
+                            {sug.map((item, index) => <li key={index}>{item}</li>)}
                         </ul>
                     </div>
+                    {jobs.length > 0 ?
+                        <div className={Styles.jobs}>
+                            <h2>Suggested Jobs</h2>
+                        {jobs.map((item, index) =>
+                            <div className={Styles.jobidiv} key={index}>
+                                <h3 className={Styles.jobtitle}>Role : {item.title}</h3>
+                                <h4 className={Styles.com}>Company : {item.company?.display_name?.trim() || "Not specified"}</h4>
+                                <h4 className={Styles.loc}>Location : {item.location?.display_name?.trim() || "Not specified"}</h4>
+                                <h4 className={Styles.cat}>Category : {item.category?.label?.trim() || "Not specified"}</h4>
+                                <p className={Styles.jobdes}>{item.description}</p>
+                                <a className={Styles.joblink} href={item.redirect_url} target="_blank">Apply now</a>
+                            </div>
+                            )}
+                        </div>
+                        : null}
                 </div>
 
-            </div>: <h1 className={Styles.errinfo}>Something went wrong , Please try again after some time !!!</h1>}
+            </div> : <h1 className={Styles.errinfo}>Something went wrong , Please try again after some time !!!</h1>}
 
         </div>
     )

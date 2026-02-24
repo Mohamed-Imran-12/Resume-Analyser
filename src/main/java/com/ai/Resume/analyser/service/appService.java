@@ -1,10 +1,7 @@
 package com.ai.Resume.analyser.service;
 
 
-import com.ai.Resume.analyser.model.loginResponse;
-import com.ai.Resume.analyser.model.previousTable;
-import com.ai.Resume.analyser.model.resultsDto;
-import com.ai.Resume.analyser.model.usersTable;
+import com.ai.Resume.analyser.model.*;
 import com.ai.Resume.analyser.repository.prevTable;
 import com.ai.Resume.analyser.repository.usersTableRepo;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -23,16 +20,24 @@ import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.util.List;
 
 @Service
 public class appService {
 
     @Value("${genKey}")
     private String genKey ;
+
+    @Value("${application-id}")
+    private String applicationId;
+
+    @Value("${application-api-key}")
+    private String applicationApiKey;
 
     @Autowired
     private prevTable previousTableRepo;
@@ -127,7 +132,7 @@ public class appService {
         resultsDto  resultsDto = objectMapper.readValue(results, resultsDto.class);
         if(resultsDto.getScore() !=0){
             String uname=SecurityContextHolder.getContext().getAuthentication().getName();
-            previousTable processedData = new previousTable(uname,resultsDto.getScore(),resultsDto.getAtsoptimizationscore(),resultsDto.getPros(),resultsDto.getCons(),resultsDto.getSuggestions());
+            previousTable processedData = new previousTable(uname,resultsDto.getScore(),resultsDto.getAtsoptimizationscore(),roles,resultsDto.getPros(),resultsDto.getCons(),resultsDto.getSuggestions());
             previousTableRepo.save(processedData);
             usersTable usermod = usersTableRepository.findById(uname).orElse(null);
             if(usermod != null){
@@ -145,7 +150,19 @@ public class appService {
     public ResponseEntity<?> lastReport() {
         previousTable previousTable = previousTableRepo.findById(SecurityContextHolder.getContext().getAuthentication().getName()).orElse(null);
         if(previousTable != null){
-            resultsDto resultsDto = new resultsDto(previousTable.getScore(),previousTable.getAtsoptimizationscore(),previousTable.getPros(),previousTable.getCons(),previousTable.getSuggestions());
+            // Job from API
+            RestTemplate restTemplate = new RestTemplate();
+            List<Job> jobs;
+            String url = "https://api.adzuna.com/v1/api/jobs/in/search/1?app_id="+applicationId+"&app_key="+applicationApiKey+"&what="+previousTable.getRoles()+"&where=tamilnadu&content-type=application/json";
+            try{
+                JobSearchResponse response = restTemplate.getForObject(url, JobSearchResponse.class);
+                jobs = response.getResults();
+            }
+            catch (Exception e) {
+                System.out.println(e.getMessage());
+                return new ResponseEntity<>("Job Fetch Failed",HttpStatus.NOT_FOUND);
+            }
+            resultsDto resultsDto = new resultsDto(previousTable.getScore(),previousTable.getAtsoptimizationscore(),previousTable.getPros(),previousTable.getCons(),previousTable.getSuggestions(),jobs);
             return  new ResponseEntity<>(resultsDto,HttpStatus.OK);
         }
         else {

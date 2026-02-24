@@ -18,5 +18,6 @@ public class resultsDto {
     private List<String> pros;
     private List<String> cons;
     private List<String> suggestions;
+    private List<Job>  jobs;
 
 }

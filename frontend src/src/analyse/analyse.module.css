@@ -73,7 +73,7 @@
     z-index: 4;
 }
 
-.pros,.cons,.sug{
+.pros,.cons,.sug,.jobs{
 
     background-color:  #1a1a1ad5;
     border-radius: 30px;
@@ -83,20 +83,63 @@
 
 }
 
-.pros h2{
-    background:linear-gradient(to right,#00ff00a4,#7efc009a);
+.pros h2 {
+    background: linear-gradient(to right, #065f46, #10b981);
     padding: 10px 15px;
-
+    color: #ffffff;
 }
 
-.cons h2{
+.cons h2 {
+    background: linear-gradient(to right, #991b1b, #ef4444);
     padding: 10px 15px;
-     background:linear-gradient(to right,#fe2e2ed5,#e85757cc);
+    color: #ffffff;
 }
 
-.sug h2{
+.sug h2 {
+    background: linear-gradient(to right, #5b21b6, #8b5cf6);
     padding: 10px 15px;
-     background:linear-gradient(to right,#0047a1,#42a5f5);
+    color: #ffffff;
+}
+
+.jobs h2 {
+    background: linear-gradient(to right, #1e293b, #334155);
+    padding: 10px 15px;
+    color: #ffffff;
+}
+.jobidiv{
+    border: 1px solid rgba(255, 255, 255, 0.125);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.8),
+                0 0 1px 1px rgba(255, 255, 255, 0.05);
+    margin: 24px 15px;
+    border-radius: 15px;
+    padding: 10px;
+}
+.jobtitle {
+    font-weight: 700;
+    padding: 5px 8px;
+    color: #e2e8f0;
+}
+
+.com,.loc,.cat{
+    font-weight: 700;
+    padding: 5px 8px;
+    color: #94a3b8;
+}
+
+.jobdes{
+    padding: 5px 8px;
+    text-align:initial;
+    color: #cbd5e1;
+}
+
+.joblink{
+    background-color: #7c3aed;
+    padding: 5px 8px;
+    text-decoration: none;
+    color: #f1f5f9;
+    border-radius: 12px;
+    margin: 10px 8px;
+    display: inline-block;
 }
 
 .pros ul,.cons ul,.sug ul{
@@ -111,6 +154,7 @@
     padding: 4px;
     color:#e0e0e0;
 }
+
 
 .rev{
     display: flex;
@@ -137,11 +181,11 @@
     justify-content: center;
     z-index: 13;
     background-color: black;
-    
+
 }
 
 .loadanimation{
-    
+
     width: 10%;
     display: block;
     border-radius: 50%;
@@ -149,7 +193,7 @@
     background-color: rgb(0, 0, 0);
     position: relative;
     animation: spin  0.8s linear infinite;
-   
+
 }
 
 
@@ -159,7 +203,7 @@
     height: 100%;
     z-index: -1;
     border-radius: 50%;
-    padding: 1rem;  
+    padding: 1rem;
     top: 50%;
     left: 50%;
     transform: translate(-50%,-50%);
@@ -170,7 +214,7 @@
 .loadanimation::after{
    background:conic-gradient(transparent 30%,#60efffd1 ,#0061ff );
     filter: blur(10px);
-    
+
 }
 
 .loadani h1 {
@@ -207,7 +251,7 @@
     left: 50%;
     transform: translate(-50%, -50%) ;
     top:-0.5007rem;
-    
+
 }
 .loadblock{
     background:rgb(0, 0, 0);
@@ -221,11 +265,11 @@
 @keyframes spin{
  from{
     transform: rotate(0deg);
-    
+
  }
  to{
     transform: rotate(360deg);
-   
+
  }
 }
 
@@ -242,7 +286,7 @@
 
 }
 
-.pros,.cons,.sug{
+.pros,.cons,.sug,.jobs{
     width:90%;
 }
 }

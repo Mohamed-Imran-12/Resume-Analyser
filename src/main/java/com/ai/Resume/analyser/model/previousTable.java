@@ -20,6 +20,7 @@ public class previousTable {
 
     private int score;
     private int atsoptimizationscore;
+    private String roles;
 
     @ElementCollection
     @Column(length = 450)
