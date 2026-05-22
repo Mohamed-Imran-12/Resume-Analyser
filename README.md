@@ -91,6 +91,11 @@ application-id=your_ADZUNA_APP_ID
 application-api-key=your_ADZUNA_API_KEY
 ```
 
+###### JWT Credentials
+```properties
+jwt-key=your_OWN_SECRET_KEY (Generate a secure key using any JWT secret generator)
+```
+
 
 #### 4. Run Backend
 Run `ResumeAnalyserApplication.java`

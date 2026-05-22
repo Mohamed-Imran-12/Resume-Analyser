@@ -75,7 +75,6 @@ public class jwtFilter extends OncePerRequestFilter {
         }
         catch (RuntimeException e) {
             System.out.println("Key validation failed and might be security Breach");
-            System.out.println(e.getMessage());
             filterChain.doFilter(request, response);
         }
     }
