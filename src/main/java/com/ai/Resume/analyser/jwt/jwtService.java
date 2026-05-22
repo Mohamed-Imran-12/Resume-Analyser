@@ -5,7 +5,7 @@ package com.ai.Resume.analyser.jwt;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
-import org.apache.poi.ss.formula.functions.T;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -17,7 +17,8 @@ import java.util.function.Function;
 @Service
 public class jwtService {
 
-    private  String Key ="JHGVSwerbfewgrvyutgFJUYFDVsdgv36tr3621q3342*#";
+    @Value("${jwt-key}")
+    private  String Key;
 
     public String generateToken(String email){
          Map<String ,Object> claims = new HashMap<>();
