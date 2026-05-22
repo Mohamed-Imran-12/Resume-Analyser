@@ -35,42 +35,47 @@ public class jwtFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+        try {
+            String token = null;
+            usersTable user = null;
+            String reqUri = request.getRequestURI();
+            if (reqUri.startsWith("/resumeAnalyser/entry/v1") || reqUri.equals("/") || reqUri.equals("/login") || reqUri.equals("/forgotpassword")) {
+                filterChain.doFilter(request, response);
+                return;
+            }
 
-        String token = null;
-        usersTable user = null;
-        String reqUri=request.getRequestURI();
-        if(reqUri.startsWith("/resumeAnalyser/entry/v1") || reqUri.equals("/") || reqUri.equals("/login") || reqUri.equals("/forgotpassword")){
-            filterChain.doFilter(request,response);
-            return;
-        }
-
-        Cookie[] cookies = request.getCookies();
-        if(cookies != null){
-            for(Cookie cookie:cookies ){
-                if (cookie.getName().equals("entrypasstoken")){
-                    token=cookie.getValue();
-                    break;
+            Cookie[] cookies = request.getCookies();
+            if (cookies != null) {
+                for (Cookie cookie : cookies) {
+                    if (cookie.getName().equals("entrypasstoken")) {
+                        token = cookie.getValue();
+                        break;
+                    }
                 }
             }
-        }
 
-        if(token != null){
-            user = usersTableRepository.findById(jwtservice.getEmail(token)).orElse(null);
-        }
+            if (token != null) {
+                user = usersTableRepository.findById(jwtservice.getEmail(token)).orElse(null);
+            }
 
-        if(token != null && user != null && SecurityContextHolder.getContext().getAuthentication()==null){
-            if(jwtservice.validateToken(token,user.getEmail())){
-                User user1 = (User) entryService.loadUserByUsername(user.getEmail());
-                UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(user1,null,user1.getAuthorities());
-                usernamePasswordAuthenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
+            if (token != null && user != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                if (jwtservice.validateToken(token, user.getEmail())) {
+                    User user1 = (User) entryService.loadUserByUsername(user.getEmail());
+                    UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(user1, null, user1.getAuthorities());
+                    usernamePasswordAuthenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
 
+
+                }
 
             }
 
+
+            filterChain.doFilter(request, response);
         }
-
-
-        filterChain.doFilter(request,response);
+        catch (RuntimeException e) {
+            System.out.println("Key validation failed and might be security Breach");
+            filterChain.doFilter(request, response);
+        }
     }
 }
