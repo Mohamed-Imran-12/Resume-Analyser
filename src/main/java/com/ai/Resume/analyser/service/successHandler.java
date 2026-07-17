@@ -3,7 +3,6 @@ package com.ai.Resume.analyser.service;
 import com.ai.Resume.analyser.jwt.jwtService;
 import com.ai.Resume.analyser.model.usersTable;
 import com.ai.Resume.analyser.repository.usersTableRepo;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +27,7 @@ public class successHandler implements AuthenticationSuccessHandler {
     private jwtService jwtService;
 
     @Override
-    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
+    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
 
         OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
         Map<String,Object> userdata = oAuth2User.getAttributes();

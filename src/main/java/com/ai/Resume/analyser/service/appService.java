@@ -6,10 +6,7 @@ import com.ai.Resume.analyser.repository.prevTable;
 import com.ai.Resume.analyser.repository.usersTableRepo;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.genai.Client;
-import com.google.genai.types.Content;
-import com.google.genai.types.GenerateContentConfig;
-import com.google.genai.types.GenerateContentResponse;
-import com.google.genai.types.Part;
+import com.google.genai.types.*;
 import org.apache.tika.Tika;
 import org.apache.tika.exception.TikaException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +28,7 @@ import java.util.List;
 public class appService {
 
     @Value("${genKey}")
-    private String genKey ;
+    private String genKey;
 
     @Value("${application-id}")
     private String applicationId;
@@ -45,18 +42,19 @@ public class appService {
     @Autowired
     private usersTableRepo usersTableRepository;
 
+
     public ResponseEntity<?> extract(String roles, MultipartFile file) throws TikaException, IOException, InterruptedException {
 
         Tika tika = new Tika();
-        ByteArrayInputStream inpfile = new ByteArrayInputStream(file.getBytes());
-        String extracted = tika.parseToString(inpfile);
+        ByteArrayInputStream inputFile = new ByteArrayInputStream(file.getBytes());
+        String extracted = tika.parseToString(inputFile);
 
-        String results=null;
-        Client client =  Client.builder().apiKey(genKey).build();
-        Content content= Content.builder().parts(Part.fromText(extracted), Part.fromText(  "You are now an advanced enterprise-grade ATS resume checker. Your task is to analyze the given resume strictly based on industry-level ATS standards and evaluate it for the specified roles. The evaluation should be moderate to strict (not lenient). A resume should only receive a score between 90 and 100 if it is nearly perfect across all aspects and the content is highly relevant to the specified roles. If any section content is irrelevant to the role, give zero points for that section.\n" +
+        String results = null;
+        Client client = Client.builder().apiKey(genKey).build();
+        Content content = Content.builder().parts(Part.fromText(extracted), Part.fromText("You are now an advanced enterprise-grade ATS resume checker, brutally honest career auditor, hiring-manager brain, and growth strategist combined. Your task is to analyze the given resume strictly based on industry-level ATS standards and evaluate it for the specified roles. The evaluation should be moderate to strict (not lenient). A resume should only receive a score between 90 and 100 if it is nearly perfect across all aspects and the content is highly relevant to the specified roles. If any section content is irrelevant to the role, give zero points for that section.\n" +
                 "\nBefore analyzing, ensure the roles and resume content match each other and that the resume content is actual content of a real resume (refer: 1. rules and instructions). If it is unrelated, simply treat it as irrelevant content and follow the instructions for irrelevant content. " +
                 "Analyze this resume for roles: " + roles + "\n" +
-                "Resume Content:\n"  +
+                "Resume Content:\n" +
                 "\n" +
                 "Rules and Instructions:\n" +
                 "1. Evaluation Categories and Score Allocation (Total 100 points, conditional on role relevance):\n" +
@@ -99,20 +97,32 @@ public class appService {
                 "5. Irrelevant content:\n" +
                 "- If the resume is completely irrelevant to the role, return score and atsoptimizationscore as 0, and empty arrays for pros, cons, and suggestions.\n" +
                 "\n" +
-                "6. Output Format:\n" +
-                "Return strict raw JSON only (alphanumeric only, no symbols, no commentary). Response structure:\n" +
+                "6. Output Format and Constraints:\n" +
+                "- You MUST cover ALL pros and ALL cons found in the resume. Do not truncate or summarize them into a short list.\n" +
+                "- For each individual point, break it down into a short, atomic sentence.\n" +
+                "- Inside the 'pros', 'cons', and 'suggestions' arrays, each text string element MUST be strictly under 275 characters.\n" +
+                "- The text strings must contain clean alphanumeric text only. Do not use internal symbols, markdown asterisks (**), or bullet points inside the JSON strings.\n" +
+                "- Do not include any conversational preambles, introductions, or trailing explanations outside the JSON structure." +
                 "{\n" +
                 "  \"score\": number,\n" +
                 "  \"atsoptimizationscore\": number,\n" +
-                "  \"pros\": [array of strings](String length <275(chars)),\n" +
-                "  \"cons\": [array of strings](String length <275(chars)),\n" +
-                "  \"suggestions\": [array of strings](String length <275(chars))\n" +
+                "  \"pros\": [array of strings],\n" +
+                "  \"cons\": [array of strings],\n" +
+                "  \"suggestions\": [array of strings]\n" +
                 "}\n"
 
         )).build();
-        while (true){
-            try{
-                GenerateContentResponse response = client.models.generateContent("gemini-2.5-flash",content, GenerateContentConfig.builder().temperature(0.0f).build());
+        while (true) {
+            try {
+                GenerateContentConfig generateContentConfig = GenerateContentConfig.builder()
+                        .temperature(0.0f)
+                        .thinkingConfig(
+                                ThinkingConfig.builder()
+                                        .thinkingLevel(ThinkingLevel.Known.HIGH)
+                                        .includeThoughts(true)
+                                        .build())
+                        .build();
+                GenerateContentResponse response = client.models.generateContent("gemini-3.1-flash-lite", content, generateContentConfig);
                 results = response.text();
                 break;
             } catch (Exception e) {
@@ -120,82 +130,80 @@ public class appService {
                 System.out.println(e);
             }
         }
-        if ( results.startsWith("```")) {
-            int firstBrace =  results.indexOf("{");
-            int lastBrace =  results.lastIndexOf("}");
+        if (results.startsWith("```")) {
+            int firstBrace = results.indexOf("{");
+            int lastBrace = results.lastIndexOf("}");
             if (firstBrace != -1 && lastBrace != -1) {
-                results =  results.substring(firstBrace, lastBrace + 1);
+                results = results.substring(firstBrace, lastBrace + 1);
             }
         }
 
         ObjectMapper objectMapper = new ObjectMapper();
-        resultsDto  resultsDto = objectMapper.readValue(results, resultsDto.class);
-        if(resultsDto.getScore() !=0){
-            String uname=SecurityContextHolder.getContext().getAuthentication().getName();
-            previousTable processedData = new previousTable(uname,resultsDto.getScore(),resultsDto.getAtsoptimizationscore(),roles,resultsDto.getPros(),resultsDto.getCons(),resultsDto.getSuggestions());
+        resultsDto resultsDto = objectMapper.readValue(results, resultsDto.class);
+        if (resultsDto.getScore() != 0) {
+            String uname = SecurityContextHolder.getContext().getAuthentication().getName();
+            previousTable processedData = new previousTable(uname, resultsDto.getScore(), resultsDto.getAtsoptimizationscore(), roles, resultsDto.getPros(), resultsDto.getCons(), resultsDto.getSuggestions());
             previousTableRepo.save(processedData);
             usersTable usermod = usersTableRepository.findById(uname).orElse(null);
-            if(usermod != null){
+            if (usermod != null) {
                 usermod.setPreviousResults(true);
                 usersTableRepository.save(usermod);
             }
-            return  new ResponseEntity<>("Analysed successfully", HttpStatus.OK);
+            return new ResponseEntity<>("Analysed successfully", HttpStatus.OK);
         }
 
-        return  new ResponseEntity<>("Invalid document", HttpStatus.NOT_ACCEPTABLE);
+        return new ResponseEntity<>("Invalid document", HttpStatus.NOT_ACCEPTABLE);
 
 
     }
 
     public ResponseEntity<?> lastReport() {
         previousTable previousTable = previousTableRepo.findById(SecurityContextHolder.getContext().getAuthentication().getName()).orElse(null);
-        if(previousTable != null){
+        if (previousTable != null) {
             // Job from API
             RestTemplate restTemplate = new RestTemplate();
             List<Job> jobs;
-            String url = "https://api.adzuna.com/v1/api/jobs/in/search/1?app_id="+applicationId+"&app_key="+applicationApiKey+"&what="+previousTable.getRoles()+"&where=tamilnadu&content-type=application/json";
-            try{
+            String url = "https://api.adzuna.com/v1/api/jobs/in/search/1?app_id=" + applicationId + "&app_key=" + applicationApiKey + "&what=" + previousTable.getRoles() + "&where=tamilnadu&content-type=application/json";
+            try {
                 JobSearchResponse response = restTemplate.getForObject(url, JobSearchResponse.class);
                 jobs = response.getResults();
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 System.out.println(e.getMessage());
-                return new ResponseEntity<>("Job Fetch Failed",HttpStatus.NOT_FOUND);
+                return new ResponseEntity<>("Job Fetch Failed", HttpStatus.NOT_FOUND);
             }
-            resultsDto resultsDto = new resultsDto(previousTable.getScore(),previousTable.getAtsoptimizationscore(),previousTable.getPros(),previousTable.getCons(),previousTable.getSuggestions(),jobs);
-            return  new ResponseEntity<>(resultsDto,HttpStatus.OK);
-        }
-        else {
-            return new ResponseEntity<>("No previous Analysis",HttpStatus.NOT_FOUND);
+            resultsDto resultsDto = new resultsDto(previousTable.getScore(), previousTable.getAtsoptimizationscore(), previousTable.getPros(), previousTable.getCons(), previousTable.getSuggestions(), jobs);
+            return new ResponseEntity<>(resultsDto, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("No previous Analysis", HttpStatus.NOT_FOUND);
         }
     }
 
     public ResponseEntity<?> logout() {
         HttpHeaders headers = new HttpHeaders();
-        ResponseCookie cookie = ResponseCookie.from("entrypasstoken","").httpOnly(true).secure(false).sameSite("Strict").maxAge(0).path("/").build();
-        headers.add(HttpHeaders.SET_COOKIE,cookie.toString());
-        return new ResponseEntity<>("Successfully loggedOut",headers,HttpStatus.OK);
+        ResponseCookie cookie = ResponseCookie.from("entrypasstoken", "").httpOnly(true).secure(false).sameSite("Strict").maxAge(0).path("/").build();
+        headers.add(HttpHeaders.SET_COOKIE, cookie.toString());
+        return new ResponseEntity<>("Successfully loggedOut", headers, HttpStatus.OK);
     }
 
     public ResponseEntity<?> deleteAccount() {
 
-        try{
-            String uname=SecurityContextHolder.getContext().getAuthentication().getName();
+        try {
+            String uname = SecurityContextHolder.getContext().getAuthentication().getName();
             usersTableRepository.deleteById(uname);
             previousTableRepo.deleteById(uname);
             HttpHeaders headers = new HttpHeaders();
-            ResponseCookie cookie = ResponseCookie.from("entrypasstoken","").httpOnly(true).secure(false).sameSite("Strict").maxAge(0).path("/").build();
-            headers.add(HttpHeaders.SET_COOKIE,cookie.toString());
-            return new ResponseEntity<>("Account deleted successfully",headers,HttpStatus.OK);
+            ResponseCookie cookie = ResponseCookie.from("entrypasstoken", "").httpOnly(true).secure(false).sameSite("Strict").maxAge(0).path("/").build();
+            headers.add(HttpHeaders.SET_COOKIE, cookie.toString());
+            return new ResponseEntity<>("Account deleted successfully", headers, HttpStatus.OK);
         } catch (Exception e) {
-            return new ResponseEntity<>("Failed to delete",HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("Failed to delete", HttpStatus.NOT_FOUND);
         }
     }
 
     public ResponseEntity<?> tokenValidation() {
         String name = SecurityContextHolder.getContext().getAuthentication().getName();
         usersTable user = usersTableRepository.findById(name).orElse(null);
-        loginResponse loginRes=new loginResponse(user.getUsername(), user.getPreviousResults());
-        return new ResponseEntity<>(loginRes,HttpStatus.OK);
+        loginResponse loginRes = new loginResponse(user.getUsername(), user.getPreviousResults());
+        return new ResponseEntity<>(loginRes, HttpStatus.OK);
     }
 }

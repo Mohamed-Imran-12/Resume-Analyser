@@ -4,7 +4,6 @@ package com.ai.Resume.analyser.configuration;
 import com.ai.Resume.analyser.jwt.jwtFilter;
 import com.ai.Resume.analyser.service.failureHandler;
 import com.ai.Resume.analyser.service.successHandler;
-import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

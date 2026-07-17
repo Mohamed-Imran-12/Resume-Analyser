@@ -8,7 +8,6 @@ import brevoApi.TransactionalEmailsApi;
 import brevoModel.SendSmtpEmail;
 import brevoModel.SendSmtpEmailSender;
 import brevoModel.SendSmtpEmailTo;
-import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -24,9 +23,9 @@ public class mailService {
     @Autowired
     private TemplateEngine templateEngine;
 
-    public void sentVerifyOtp(String username,String email,String otp) throws MessagingException {
+    public void sentVerifyOtp(String username,String email,String otp)  {
 
-        String toEmail=email.substring(0,1)+"*********"+email.substring(email.indexOf("@"),email.length());
+        String toEmail=email.charAt(0)+"*********"+email.substring(email.indexOf("@"));
         Context context = new Context();
         context.setVariable("username",username);
         context.setVariable("email",toEmail);
@@ -55,9 +54,9 @@ public class mailService {
 
     }
 
-    public void sentResetOtp(String username,String email,String otp) throws MessagingException {
+    public void sentResetOtp(String username,String email,String otp)  {
 
-        String toEmail=email.substring(0,1)+"*********"+email.substring(email.indexOf("@"),email.length());
+        String toEmail=email.charAt(0)+"*********"+email.substring(email.indexOf("@"));
         Context context = new Context();
         context.setVariable("username",username);
         context.setVariable("email",toEmail);
