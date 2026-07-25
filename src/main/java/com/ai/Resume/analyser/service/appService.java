@@ -19,9 +19,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -174,10 +174,11 @@ public class appService {
                 jobs = response.getResults();
             } catch (Exception e) {
                 System.out.println(e.getMessage());
-                return new ResponseEntity<>("Job Fetch Failed", HttpStatus.NOT_FOUND);
+                resultsDto resultsDto = new resultsDto(previousTable.getScore(), previousTable.getAtsoptimizationscore(), previousTable.getPros(), previousTable.getCons(), previousTable.getSuggestions(), new ArrayList<>());
+                return ResponseEntity.ok(resultsDto);
             }
             resultsDto resultsDto = new resultsDto(previousTable.getScore(), previousTable.getAtsoptimizationscore(), previousTable.getPros(), previousTable.getCons(), previousTable.getSuggestions(), jobs);
-            return new ResponseEntity<>(resultsDto, HttpStatus.OK);
+            return ResponseEntity.ok(resultsDto);
         } else {
             return new ResponseEntity<>("No previous Analysis", HttpStatus.NOT_FOUND);
         }
