@@ -49,7 +49,11 @@ public class appService {
         ByteArrayInputStream inputFile = new ByteArrayInputStream(file.getBytes());
         String extracted = tika.parseToString(inputFile);
 
-        String results = null;
+        if(extracted.trim().isEmpty() || extracted.length()>5000){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Please upload a valid resume");
+        }
+
+        String results;
         Client client = Client.builder().apiKey(genKey).build();
         Content content = Content.builder().parts(Part.fromText(extracted), Part.fromText("You are now an advanced enterprise-grade ATS resume checker, brutally honest career auditor, hiring-manager brain, and growth strategist combined. Your task is to analyze the given resume strictly based on industry-level ATS standards and evaluate it for the specified roles. The evaluation should be moderate to strict (not lenient). A resume should only receive a score between 90 and 100 if it is nearly perfect across all aspects and the content is highly relevant to the specified roles. If any section content is irrelevant to the role, give zero points for that section.\n" +
                 "\nBefore analyzing, ensure the roles and resume content match each other and that the resume content is actual content of a real resume (refer: 1. rules and instructions). If it is unrelated, simply treat it as irrelevant content and follow the instructions for irrelevant content. " +
@@ -101,7 +105,7 @@ public class appService {
                 "- You MUST cover ALL pros and ALL cons found in the resume. Do not truncate or summarize them into a short list.\n" +
                 "- the 'pros', 'cons', and 'suggestions' arrays may have different sizes (no of elements) based on resume quality ex : (good resume has more points in 'pros' and bad resume has less points in 'pros') and minimum of 5 elements to 8 elements in each array and also make sure that not all '3 arrays have same sizes' . \n" +
                 "- For each individual point, break it down into a short, atomic sentence .\n" +
-                "- Inside the 'pros', 'cons', and 'suggestions' arrays, each text string element MUST be strictly under 275 characters and above 50 characters .\n" +
+                "- Inside the 'pros', 'cons', and 'suggestions' arrays, each text string element MUST be strictly under 275 characters and above 40 characters .\n" +
                 "- The text strings must contain clean alphanumeric text only.\n" +
                 "- Do not include any conversational preambles, introductions, or trailing explanations outside the JSON structure." +
                 "{\n" +
@@ -123,7 +127,7 @@ public class appService {
                                         .includeThoughts(true)
                                         .build())
                         .build();
-                GenerateContentResponse response = client.models.generateContent("gemini-3.1-flash-lite", content, generateContentConfig);
+                GenerateContentResponse response = client.models.generateContent("gemini-3.5-flash-lite", content, generateContentConfig);
                 results = response.text();
                 break;
             } catch (Exception e) {
@@ -131,7 +135,7 @@ public class appService {
                 System.out.println(e);
             }
         }
-        if (results.startsWith("```")) {
+        if ( results!= null && results.startsWith("```")) {
             int firstBrace = results.indexOf("{");
             int lastBrace = results.lastIndexOf("}");
             if (firstBrace != -1 && lastBrace != -1) {
@@ -204,6 +208,9 @@ public class appService {
     public ResponseEntity<?> tokenValidation() {
         String name = SecurityContextHolder.getContext().getAuthentication().getName();
         usersTable user = usersTableRepository.findById(name).orElse(null);
+        if(user == null ){
+            return ResponseEntity.badRequest().body("Invalid token");
+        }
         loginResponse loginRes = new loginResponse(user.getUsername(), user.getPreviousResults());
         return new ResponseEntity<>(loginRes, HttpStatus.OK);
     }
