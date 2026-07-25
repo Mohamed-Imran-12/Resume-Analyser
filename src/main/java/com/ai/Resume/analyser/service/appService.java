@@ -105,7 +105,7 @@ public class appService {
                 "- You MUST cover ALL pros and ALL cons found in the resume. Do not truncate or summarize them into a short list.\n" +
                 "- the 'pros', 'cons', and 'suggestions' arrays may have different sizes (no of elements) based on resume quality ex : (good resume has more points in 'pros' and bad resume has less points in 'pros') and minimum of 5 elements to 8 elements in each array and also make sure that not all '3 arrays have same sizes' . \n" +
                 "- For each individual point, break it down into a short, atomic sentence .\n" +
-                "- Inside the 'pros', 'cons', and 'suggestions' arrays, each text string element MUST be strictly under 275 characters and above 40 characters .\n" +
+                "- Inside the 'pros', 'cons', and 'suggestions' arrays, each text string element MUST be strictly under 275 characters and above 50 characters .\n" +
                 "- The text strings must contain clean alphanumeric text only.\n" +
                 "- Do not include any conversational preambles, introductions, or trailing explanations outside the JSON structure." +
                 "{\n" +
